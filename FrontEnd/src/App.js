@@ -8,10 +8,13 @@ import axios from 'axios';
 import { format } from 'timeago.js';
 import Register from './components/Register';
 import Login from './components/Login';
-
+import Red from './components/Red';
+import Yellow from './components/Yellow';
+import Green from './components/Green';
+// import getSentiment from './components/nlp';
 function App() {
     const myStorage = window.localStorage;
-    const [currentUser, setCurrentUser] = useState(myStorage.getItem("user"));    
+    const [currentUser, setCurrentUser] = useState(myStorage.getItem('user'));
     const [pins, setPins] = useState([]);
     const [currentPlaceId, setCurrentPlaceId] = useState(null);
     const [newPlace, setNewPlace] = useState(null);
@@ -26,6 +29,9 @@ function App() {
     });
     const [showRegister, setShowRegister] = useState(false);
     const [showLogin, setShowLogin] = useState(false);
+
+    const [sentimentData, setSentimentData] = useState(0);
+    // const sentimentData = 0;
 
     function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
         var R = 6371; // Radius of the earth in km
@@ -89,6 +95,18 @@ function App() {
         } catch (err) {
             console.log(err);
         }
+        try {
+            const sentiment_response_obj = await axios.post(
+                'http://localhost:4000/api/sentiment',
+                {
+                    data: desc,
+                }
+            );
+            setSentimentData(sentiment_response_obj.data.sentiment);
+            // sentimentData = sentiment_response_obj.data.sentiment;
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     useEffect(() => {
@@ -105,7 +123,6 @@ function App() {
 
     const handleDelete = async (e) => {
         e.preventDefault();
-        //try to use full paths because simple delete isnt working
         console.log(e.currentTarget.getAttribute('data-column'));
 
         let id = e.currentTarget.getAttribute('data-column');
@@ -118,7 +135,7 @@ function App() {
             console.log(err);
         }
     };
-    const handleLogout = () => {        
+    const handleLogout = () => {
         setCurrentUser(null);
         myStorage.removeItem('user');
     };
@@ -171,14 +188,28 @@ function App() {
                     showUserHeading={true}
                 />
 
-                {pins.map((p) => (
+                {pins.map((p, index) => (
                     <>
+                        console.log(p);
                         <Marker
                             latitude={p.lat}
                             longitude={p.long}
                             offsetLeft={-3.5 * viewport.zoom}
                             offsetTop={-7 * viewport.zoom}
+                            key={index}
                         >
+                            <div className="sentiment-box">
+                                {sentimentData === 1 ? (
+                                    <Green />
+                                ) : sentimentData === 0 ? (
+                                    <Yellow />
+                                ) : (
+                                    <Red />
+                                )}
+
+                                <img src={caution} style={{ width: '20px' }} />
+                                <div className="caution"> High Alert</div>
+                            </div>
                             <Room
                                 style={{
                                     fontSize: 7 * viewport.zoom,
@@ -219,8 +250,15 @@ function App() {
                                         Created by <b>{p.username}</b>
                                     </span>
                                     {p.username === currentUser && (
-                    <button type="submit" className="submitButton" onClick={handleDelete} data-column={p._id} >Delete</button>
-                    )}
+                                        <button
+                                            type="submit"
+                                            className="submitButton"
+                                            onClick={handleDelete}
+                                            data-column={p._id}
+                                        >
+                                            Delete
+                                        </button>
+                                    )}
                                     <span className="date">
                                         {format(p.createdAt)}
                                     </span>
