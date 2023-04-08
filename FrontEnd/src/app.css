@@ -1,0 +1,131 @@
+.card {
+    width: 250px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+label {
+    width: max-content;
+    color: #262626;
+    font-size: 13px;
+    margin: 3px 0;
+}
+.parent {
+    position: relative;
+}
+.find-location {
+    position: absolute;
+    padding: 10px;
+    max-width: 100px;
+    font-size: 12px;
+    border-radius: 5px;
+    top: 35px;
+    left: 10px;
+    z-index: 10;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    background-color: #fff;
+    color: #262626;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+.desc {
+    font-size: 14px;
+}
+
+.star {
+    color: gold;
+}
+
+.username {
+    font-size: 14px;
+}
+
+.date {
+    font-size: 12px;
+}
+
+form {
+    width: 250px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    justify-content: space-between;
+    color: rgb(88, 87, 87);
+}
+
+input {
+    border: none;
+    border-bottom: 1px solid gray;
+}
+
+input::placeholder,
+textarea::placeholder {
+    font-size: 12px;
+    color: rgb(185, 184, 184);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+}
+
+textarea {
+    border: none;
+    border-bottom: 1px solid gray;
+}
+
+.submitButton {
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    color: #262626;
+    background-color: #fbbf24;
+    cursor: pointer;
+}
+
+.buttons,
+.logout {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.button {
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.button:focus {
+    outline: none;
+}
+
+.logout {
+    background-color: #fbbf24;
+    color: #262626;
+    font-weight: bold;
+}
+
+.login {
+    background-color: #fbbf24;
+    color: #262626;
+    font-weight: bold;
+}
+
+.register {
+    background-color: #fff;
+    color: #262626;
+    font-weight: bold;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
