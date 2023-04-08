@@ -11,9 +11,7 @@ import Login from './components/Login';
 
 function App() {
     const myStorage = window.localStorage;
-    const [currentUsername, setCurrentUsername] = useState(
-        myStorage.getItem('user')
-    );
+    const [currentUser, setCurrentUser] = useState(myStorage.getItem("user"));    
     const [pins, setPins] = useState([]);
     const [currentPlaceId, setCurrentPlaceId] = useState(null);
     const [newPlace, setNewPlace] = useState(null);
@@ -76,7 +74,7 @@ function App() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const newPin = {
-            username: currentUsername,
+            username: currentUser,
             title,
             desc,
             rating: star,
@@ -105,8 +103,23 @@ function App() {
         getPins();
     }, []);
 
-    const handleLogout = () => {
-        setCurrentUsername(null);
+    const handleDelete = async (e) => {
+        e.preventDefault();
+        //try to use full paths because simple delete isnt working
+        console.log(e.currentTarget.getAttribute('data-column'));
+
+        let id = e.currentTarget.getAttribute('data-column');
+        try {
+            const res = await axios.delete('/pins/' + id);
+            console.log(res.data);
+            setPins(res.data);
+            setNewPlace(null);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+    const handleLogout = () => {        
+        setCurrentUser(null);
         myStorage.removeItem('user');
     };
 
@@ -150,7 +163,7 @@ function App() {
                 transitionDuration="200"
                 mapStyle="mapbox://styles/mapbox/streets-v12"
                 onViewportChange={(viewport) => setViewport(viewport)}
-                onDblClick={currentUsername && handleAddClick}
+                onDblClick={currentUser && handleAddClick}
             >
                 <GeolocateControl
                     positionOptions={{ enableHighAccuracy: true }}
@@ -170,7 +183,7 @@ function App() {
                                 style={{
                                     fontSize: 7 * viewport.zoom,
                                     color:
-                                        currentUsername === p.username
+                                        currentUser === p.username
                                             ? 'tomato'
                                             : 'slateblue',
                                     cursor: 'pointer',
@@ -205,6 +218,9 @@ function App() {
                                     <span className="username">
                                         Created by <b>{p.username}</b>
                                     </span>
+                                    {p.username === currentUser && (
+                    <button type="submit" className="submitButton" onClick={handleDelete} data-column={p._id} >Delete</button>
+                    )}
                                     <span className="date">
                                         {format(p.createdAt)}
                                     </span>
@@ -277,7 +293,7 @@ function App() {
                         </Popup>
                     </>
                 )}
-                {currentUsername ? (
+                {currentUser ? (
                     <button className="button logout" onClick={handleLogout}>
                         Log out
                     </button>
@@ -301,7 +317,7 @@ function App() {
                 {showLogin && (
                     <Login
                         setShowLogin={setShowLogin}
-                        setCurrentUsername={setCurrentUsername}
+                        setCurrentUser={setCurrentUser}
                         myStorage={myStorage}
                     />
                 )}
